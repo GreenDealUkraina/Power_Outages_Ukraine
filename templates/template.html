@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{TITLE}}</title>
+  <style>
+    :root {
+      --ink: #1f2a34;
+      --muted: #5b6b7a;
+      --accent: #0f6f7a;
+      --bg: #f4f2ec;
+      --card: #ffffff;
+      --stroke: #d8d2c8;
+      --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "IBM Plex Sans", "Source Sans 3", "Segoe UI", sans-serif;
+      color: var(--ink);
+      background: radial-gradient(1200px 600px at 10% -10%, #f9f5ec 10%, transparent 70%),
+                  linear-gradient(180deg, #f3efe7 0%, #f7f5f1 55%, #f1eee8 100%);
+    }
+    .page {
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 32px 28px 60px;
+    }
+    header {
+      display: grid;
+      grid-template-columns: 1.4fr 0.6fr;
+      gap: 18px;
+      align-items: center;
+      border-bottom: 2px solid var(--stroke);
+      padding-bottom: 22px;
+    }
+    .title {
+      font-family: "IBM Plex Serif", "Georgia", serif;
+      font-size: 34px;
+      margin: 0 0 8px;
+    }
+    .description {
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.5;
+      margin: 0 0 10px;
+    }
+    .authors {
+      font-size: 14px;
+      color: var(--muted);
+    }
+    .logo-bar {
+      display: flex;
+      justify-content: flex-end;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .logo-bar img {
+      height: 64px;
+      object-fit: contain;
+      filter: grayscale(10%);
+    }
+    .summary {
+      margin: 28px 0;
+      background: #f6f3ee;
+      border: 1px solid #ded7cb;
+      border-left: 6px solid var(--accent);
+      padding: 18px 22px;
+      box-shadow: var(--shadow);
+    }
+    .summary.collapsed {
+      padding-top: 12px;
+      padding-bottom: 12px;
+    }
+    .collapsible-toggle {
+      width: 100%;
+      background: none;
+      border: none;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--ink);
+      cursor: pointer;
+      text-align: left;
+    }
+    .collapsible-toggle .arrow {
+      display: inline-block;
+      transition: transform 0.2s ease;
+      font-size: 16px;
+      color: var(--muted);
+    }
+    .collapsible-toggle[aria-expanded="true"] .arrow {
+      transform: rotate(90deg);
+    }
+    .collapsible-content {
+      display: none;
+      margin-top: 10px;
+    }
+    .collapsible-content.open {
+      display: block;
+    }
+    .summary h2 {
+      margin: 0 0 10px;
+      font-size: 18px;
+      letter-spacing: 0.3px;
+    }
+    .summary ul {
+      margin: 0;
+      padding-left: 18px;
+      color: var(--muted);
+      list-style-type: square;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 22px;
+    }
+    .grid.single {
+      grid-template-columns: 1fr;
+    }
+    .divider {
+      height: 1px;
+      background: #ded7cb;
+      margin: 18px 0 6px;
+    }
+    .panel {
+      background: var(--card);
+      border: 1px solid var(--stroke);
+      box-shadow: var(--shadow);
+      padding: 14px 14px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      position: relative;
+    }
+    .panel h3 {
+      margin: 0;
+      font-size: 18px;
+    }
+    .panel iframe {
+      width: 100%;
+      height: 520px;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      background: #fff;
+      overflow: hidden;
+    }
+    @media (max-width: 960px) {
+      header {
+        grid-template-columns: 1fr;
+      }
+      .logo-bar {
+        justify-content: flex-start;
+      }
+      .grid {
+        grid-template-columns: 1fr;
+      }
+      .panel iframe { height: 320px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header>
+      <div>
+        <h1 class="title">{{TITLE}}</h1>
+        <p class="description">{{DESCRIPTION}}</p>
+        <div class="authors">{{AUTHORS}}</div>
+        <div class="authors">{{CONTACT}}</div>
+      </div>
+      <div class="logo-bar">
+        {{LOGOS}}
+      </div>
+    </header>
+    <section class="summary collapsible">
+      <button class="collapsible-toggle" type="button" aria-expanded="true">
+        <span class="arrow">▸</span>
+        <span>{{PURPOSE_TITLE}}</span>
+      </button>
+      <div class="collapsible-content open">
+        <p class="description">{{PURPOSE_TEXT}}</p>
+      </div>
+    </section>
+    <div class="divider"></div>
+    {{INSIGHTS_SECTION}}
+    <section class="grid single">
+      <div class="panel">
+        <h3>{{MAPS_TITLE}}</h3>
+        <p class="description">Use the dropdown inside the map panel to switch dates.</p>
+        <iframe src="{{MAPS_FILE}}" title="Outage maps"></iframe>
+      </div>
+    </section>
+    <section class="summary">
+      <h2>{{ABOUT_TITLE}}</h2>
+      <p class="description">{{ABOUT_TEXT}}</p>
+    </section>
+    <section class="summary">
+      <div class="meta" style="font-size: 12px;">
+        <div><strong>Citation:</strong> {{CITATION_TEXT}}</div>
+        <div><strong>License:</strong> {{LICENSE_TEXT}}</div>
+      </div>
+    </section>
+  </div>
+  <script>
+    document.querySelectorAll(".collapsible-toggle").forEach((btn) => {
+      const parent = btn.closest(".summary");
+      btn.addEventListener("click", () => {
+        const content = btn.nextElementSibling;
+        const isOpen = btn.getAttribute("aria-expanded") === "true";
+        btn.setAttribute("aria-expanded", String(!isOpen));
+        if (content) {
+          content.classList.toggle("open", !isOpen);
+        }
+        if (parent) {
+          parent.classList.toggle("collapsed", isOpen);
+        }
+      });
+    });
+  </script>
+  <script>
+    const mapFrame = document.querySelector("iframe[title='Outage maps']");
+    if (mapFrame) {
+      mapFrame.addEventListener("mouseenter", () => {
+        document.body.style.overflow = "hidden";
+      });
+      mapFrame.addEventListener("mouseleave", () => {
+        document.body.style.overflow = "";
+      });
+    }
+  </script>
+</body>
+</html>

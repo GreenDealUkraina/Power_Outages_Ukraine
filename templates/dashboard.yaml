@@ -1,0 +1,39 @@
+title: "Daily Power Outage Data by Region in Ukraine"
+description: "Updated on 04.02.2026"
+license: "Free to use with attribution (CC BY 4.0)."
+citation: "R., Carr & F., Meissner. 2026. Daily power outage data by region in Ukraine. Green Deal Ukraïna project @ Helmholtz-Zentrum für Energie und Materialien."
+purpose:
+  heading: Purpose
+  text: |
+    This interactive webpage shows the scheduled and actual hours of power outages reported by households in Ukraine each day across 15 different administrative regions (oblasts). 
+    Data collection is commissioned by the Green Deal Ukraïna project and collected daily via a survey. Each daily value per region is the average of two sub-queues of consumers.
+    Consumers in Ukraine are divided into 12 sub-queues per region, each with a roughly equal electricity demand.
+    Scheduled outages are intended by the authorities to be equally distributed across sub-queues within a region.
+    As we add new data, more dates will become available from the drop down list below.
+authors:
+  - name: Robert Carr
+    linkedin: https://www.linkedin.com/in/robert-carr-b71826183/
+  - name: Dr. Frank Meissner
+    linkedin: https://www.linkedin.com/in/frank-mei%C3%9Fner-317991211/
+email contact: Email contact - robert.carr [at] helmholtz-berlin.de
+logos:
+  - file: logos/HZB_logo-a4-rgb transparent.png
+    url: https://www.helmholtz-berlin.de/
+  - file: logos/GDU_logo_nowhitespace.png
+    url: https://greendealukraina.org/
+key_insights:
+  enabled: false
+  heading: Key insights
+  bullets:
+    - Add insight 1 here.
+    - Add insight 2 here.
+    - Add insight 3 here.
+about:
+  heading: About the project
+  text: "Green Deal Ukraïna (GDU) is a German, Ukrainian, and Polish project that aims to support Ukraine in making future-proof energy and climate policy decisions. It is funded by the German Ministry of Research, Technology, and Space (BMFTR). The three main work streams are data & modelling, policy advice, and capacity building. In addition, GDU contributes to the development of the newly established Kyiv Energy and Climate Lab in Ukraine."
+maps:
+  combined:
+    title: Scheduled and actual outages by administrative region
+    file: maps/outage_maps.html
+    scheduled_tooltip: "Planned outages announced in advance by authorities."
+    actual_tooltip: "Observed outages reported by households."
