@@ -1,5 +1,9 @@
 title: "Daily Power Outage Data by Region in Ukraine"
 description: "Updated on 04.02.2026"
+header_link:
+  prefix: "Check out our other dashboard that focuses more generally on the"
+  text: "state of the Ukrainian energy system"
+  url: "https://rdcarr2.github.io/UA_state_of_system/Jan_2026/index.html"
 license: "Free to use with attribution (CC BY 4.0)."
 citation: "R., Carr & F., Meissner. 2026. Daily power outage data by region in Ukraine. Green Deal Ukraïna project @ Helmholtz-Zentrum für Energie und Materialien."
 purpose:

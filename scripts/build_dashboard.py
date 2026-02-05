@@ -127,6 +127,20 @@ def main() -> None:
     citation = config.get("citation", "")
     license_text = config.get("license", "")
 
+    header_link = config.get("header_link", {})
+    link_prefix = header_link.get(
+        "prefix",
+        "Check out our other dashboard that focuses more generally on the",
+    ).strip()
+    link_text = header_link.get("text", "").strip()
+    link_url = header_link.get("url", "").strip()
+    header_link_html = ""
+    if link_text and link_url:
+        header_link_html = (
+            f"{link_prefix} "
+            f'<a href="{link_url}" target="_blank" rel="noopener">{link_text}</a>.'
+        )
+
     purpose = config.get("purpose", {})
     purpose_title = purpose.get("heading", "Purpose")
     purpose_text = purpose.get("text", "")
@@ -172,6 +186,7 @@ def main() -> None:
         .replace("{{ABOUT_TEXT}}", about_text)
         .replace("{{CITATION_TEXT}}", citation)
         .replace("{{LICENSE_TEXT}}", license_text)
+        .replace("{{HEADER_LINK}}", header_link_html)
         .replace("{{MAPS_TITLE}}", maps_title)
         .replace("{{MAPS_FILE}}", maps_file)
     )

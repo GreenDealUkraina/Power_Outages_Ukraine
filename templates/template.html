@@ -31,7 +31,7 @@
       display: grid;
       grid-template-columns: 1.4fr 0.6fr;
       gap: 18px;
-      align-items: center;
+      align-items: start;
       border-bottom: 2px solid var(--stroke);
       padding-bottom: 22px;
     }
@@ -50,11 +50,26 @@
       font-size: 14px;
       color: var(--muted);
     }
+    .header-link {
+      margin-top: 12px;
+      font-weight: 700;
+      font-size: 14px;
+      color: var(--ink);
+    }
+    .header-link a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 700;
+    }
+    .header-link a:hover {
+      text-decoration: underline;
+    }
     .logo-bar {
       display: flex;
       justify-content: flex-end;
       gap: 16px;
       flex-wrap: wrap;
+      align-self: start;
     }
     .logo-bar img {
       height: 64px;
@@ -171,6 +186,7 @@
         <p class="description">{{DESCRIPTION}}</p>
         <div class="authors">{{AUTHORS}}</div>
         <div class="authors">{{CONTACT}}</div>
+        <div class="header-link">{{HEADER_LINK}}</div>
       </div>
       <div class="logo-bar">
         {{LOGOS}}
