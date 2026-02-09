@@ -59,8 +59,8 @@ def parse_float(value: str) -> float | None:
         return None
 
 
-def load_clean_data(path: Path) -> Tuple[List[str], Dict[str, Dict[str, Dict[str, float]]]]:
-    data: Dict[str, Dict[str, Dict[str, float]]] = {}
+def load_clean_data(path: Path) -> Tuple[List[str], Dict[str, Dict[str, Dict[str, object]]]]:
+    data: Dict[str, Dict[str, Dict[str, object]]] = {}
     dates: List[datetime] = []
     with path.open(newline="", encoding="utf-8") as f:
         reader = csv.DictReader(f)
@@ -73,10 +73,12 @@ def load_clean_data(path: Path) -> Tuple[List[str], Dict[str, Dict[str, Dict[str
             actual = parse_float(row.get("Actual_outages", ""))
             data.setdefault(date, {})
             subqueues = (row.get("Subqueues") or "").strip()
+            emergency = (row.get("Emergency?") or "").strip()
             data[date][gid] = {
                 "scheduled": scheduled,
                 "actual": actual,
                 "subqueues": subqueues,
+                "emergency": emergency,
             }
             try:
                 dates.append(datetime.strptime(date, DATE_FMT))
@@ -303,6 +305,10 @@ def build_html(
     .leaflet-bar a[data-tooltip]:hover::after {{
       opacity: 1;
     }}
+    .emergency-icon {{
+      font-size: 16px;
+      line-height: 1;
+    }}
     .leaflet-interactive:focus {{
       outline: none;
     }}
@@ -421,10 +427,12 @@ def build_html(
 
     let layerScheduled = null;
     let layerActual = null;
+    let emergencyMarkers = null;
     let modalMap = null;
     let modalLayer = null;
+    let modalEmergencyMarkers = null;
 
-    function addLegend(map) {{
+    function addLegend(map, includeEmergency) {{
       const legend = L.control({{ position: "bottomright" }});
       legend.onAdd = function () {{
         const div = L.DomUtil.create("div", "legend");
@@ -463,6 +471,18 @@ def build_html(
         occRow.appendChild(occSwatch);
         occRow.appendChild(occLabel);
         div.appendChild(occRow);
+
+        if (includeEmergency) {{
+          const emRow = document.createElement("div");
+          emRow.className = "row";
+          const emIcon = document.createElement("span");
+          emIcon.textContent = "🚨";
+          const emLabel = document.createElement("span");
+          emLabel.textContent = "Emergency outages";
+          emRow.appendChild(emIcon);
+          emRow.appendChild(emLabel);
+          div.appendChild(emRow);
+        }}
         return div;
       }};
       legend.addTo(map);
@@ -523,16 +543,33 @@ def build_html(
       map.addControl(new Control({{ position: "topleft" }}));
     }}
 
+    function parseEmergencyQueues(text) {{
+      if (!text) return [];
+      return text.split(",").map(t => t.trim()).filter(Boolean);
+    }}
+
     function renderLayers(selectedDate) {{
       if (layerScheduled) mapScheduled.removeLayer(layerScheduled);
       if (layerActual) mapActual.removeLayer(layerActual);
+      if (emergencyMarkers) mapScheduled.removeLayer(emergencyMarkers);
 
       const dayData = outageData[selectedDate] || {{}};
+      emergencyMarkers = L.layerGroup().addTo(mapScheduled);
 
       layerScheduled = L.geoJSON(adminGeo, {{
         style: feature => {{
           const gid = feature.properties.GID_1;
-          const val = dayData[gid] ? dayData[gid].scheduled : null;
+          const entry = dayData[gid] || {{}};
+          const val = entry.scheduled;
+          const emergencyQueues = parseEmergencyQueues(entry.emergency);
+          if (emergencyQueues.length >= 2) {{
+            return {{
+              color: "#666",
+              weight: 0.7,
+              fillColor: "#ffffff",
+              fillOpacity: 0.0
+            }};
+          }}
           return {{
             color: "#666",
             weight: 0.7,
@@ -543,12 +580,30 @@ def build_html(
         onEachFeature: (feature, layer) => {{
           const gid = feature.properties.GID_1;
           const name = feature.properties.NAME_1 || gid;
-          const val = dayData[gid] ? dayData[gid].scheduled : null;
+          const entry = dayData[gid] || {{}};
+          const val = entry.scheduled;
+          const emergencyQueues = parseEmergencyQueues(entry.emergency);
           const valueText = (val === null || val === undefined || val === "") ? "No data" : `${{val}} hours`;
-          const subqueues = dayData[gid] ? dayData[gid].subqueues : "";
+          const subqueues = entry.subqueues || "";
           const subqueueLine = subqueues ? `<br>Sub-queues: ${{subqueues}}` : "";
-          const html = `<strong>${{name}}</strong><br>Region ID: ${{gid}}<br>Scheduled: ${{valueText}}${{subqueueLine}}`;
+          const emergencyLine = emergencyQueues.length ? `<br>Emergency in: ${{emergencyQueues.join(", ")}}` : "";
+          const html = `<strong>${{name}}</strong><br>Region ID: ${{gid}}<br>Scheduled: ${{valueText}}${{subqueueLine}}${{emergencyLine}}`;
           layer.bindTooltip(html, {{ sticky: true }});
+
+          if (emergencyQueues.length) {{
+            const center = layer.getBounds().getCenter();
+            const symbols = emergencyQueues.length >= 2 ? "🚨 🚨" : "🚨";
+            const marker = L.marker(center, {{
+              icon: L.divIcon({{
+                className: "emergency-icon",
+                html: symbols,
+              }}),
+              interactive: true
+            }});
+            const tooltipText = `Emergency outages in sub-queues: ${{emergencyQueues.join(", ")}}`;
+            marker.bindTooltip(tooltipText, {{ sticky: true }});
+            emergencyMarkers.addLayer(marker);
+          }}
         }}
       }}).addTo(mapScheduled);
 
@@ -614,6 +669,11 @@ def build_html(
       const selectedDate = dateSelect.value;
       const dayData = outageData[selectedDate] || {{}};
 
+      if (modalEmergencyMarkers) {{
+        modalMap.removeLayer(modalEmergencyMarkers);
+      }}
+      modalEmergencyMarkers = L.layerGroup().addTo(modalMap);
+
       if (modalLayer) {{
         modalMap.removeLayer(modalLayer);
       }}
@@ -621,7 +681,17 @@ def build_html(
       modalLayer = L.geoJSON(adminGeo, {{
         style: feature => {{
           const gid = feature.properties.GID_1;
-          const val = dayData[gid] ? dayData[gid][kind] : null;
+          const entry = dayData[gid] || {{}};
+          const val = entry[kind];
+          const emergencyQueues = parseEmergencyQueues(entry.emergency);
+          if (kind === "scheduled" && emergencyQueues.length >= 2) {{
+            return {{
+              color: "#666",
+              weight: 0.7,
+              fillColor: "#ffffff",
+              fillOpacity: 0.0
+            }};
+          }}
           return {{
             color: "#666",
             weight: 0.7,
@@ -632,18 +702,36 @@ def build_html(
         onEachFeature: (feature, layer) => {{
           const gid = feature.properties.GID_1;
           const name = feature.properties.NAME_1 || gid;
-          const val = dayData[gid] ? dayData[gid][kind] : null;
+          const entry = dayData[gid] || {{}};
+          const val = entry[kind];
           const valueText = (val === null || val === undefined || val === "") ? "No data" : `${{val}} hours`;
-          const subqueues = dayData[gid] ? dayData[gid].subqueues : "";
+          const subqueues = entry.subqueues || "";
+          const emergencyQueues = parseEmergencyQueues(entry.emergency);
           const subqueueLine = subqueues ? `<br>Sub-queues: ${{subqueues}}` : "";
+          const emergencyLine = emergencyQueues.length ? `<br>Emergency in: ${{emergencyQueues.join(", ")}}` : "";
           const label = kind === "scheduled" ? "Scheduled" : "Actual";
-          const html = `<strong>${{name}}</strong><br>Region ID: ${{gid}}<br>${{label}}: ${{valueText}}${{subqueueLine}}`;
+          const html = `<strong>${{name}}</strong><br>Region ID: ${{gid}}<br>${{label}}: ${{valueText}}${{subqueueLine}}${{emergencyLine}}`;
           layer.bindTooltip(html, {{ sticky: true }});
+
+          if (kind === "scheduled" && emergencyQueues.length) {{
+            const center = layer.getBounds().getCenter();
+            const symbols = emergencyQueues.length >= 2 ? "🚨 🚨" : "🚨";
+            const marker = L.marker(center, {{
+              icon: L.divIcon({{
+                className: "emergency-icon",
+                html: symbols,
+              }}),
+              interactive: true
+            }});
+            const tooltipText = `Emergency outages in sub-queues: ${{emergencyQueues.join(", ")}}`;
+            marker.bindTooltip(tooltipText, {{ sticky: true }});
+            modalEmergencyMarkers.addLayer(marker);
+          }}
         }}
       }}).addTo(modalMap);
       L.geoJSON(occupiedGeo, {{ style: occupiedStyle }}).addTo(modalMap);
       modalMap.fitBounds(L.geoJSON(adminGeo).getBounds());
-      addLegend(modalMap);
+      addLegend(modalMap, kind === "scheduled");
     }}
 
     const dateSelect = document.getElementById("date-select");
@@ -660,8 +748,8 @@ def build_html(
       renderLayers(e.target.value);
     }});
 
-    addLegend(mapScheduled);
-    addLegend(mapActual);
+    addLegend(mapScheduled, true);
+    addLegend(mapActual, false);
     renderLayers(initialDate);
     const bounds = fitBoth();
     addControls(mapScheduled, "scheduled_outages", bounds);

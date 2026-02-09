@@ -145,6 +145,10 @@ def main() -> None:
     purpose_title = purpose.get("heading", "Purpose")
     purpose_text = purpose.get("text", "")
 
+    visualised = config.get("visualised", {})
+    visual_title = visualised.get("heading", "What is visualised?")
+    visual_text = visualised.get("text", "")
+
     about = config.get("about", {})
     about_title = about.get("heading", "About the project")
     about_text = about.get("text", "")
@@ -182,6 +186,8 @@ def main() -> None:
         .replace("{{INSIGHTS_SECTION}}", insights_section)
         .replace("{{PURPOSE_TITLE}}", purpose_title)
         .replace("{{PURPOSE_TEXT}}", purpose_text)
+        .replace("{{VISUAL_TITLE}}", visual_title)
+        .replace("{{VISUAL_TEXT}}", visual_text)
         .replace("{{ABOUT_TITLE}}", about_title)
         .replace("{{ABOUT_TEXT}}", about_text)
         .replace("{{CITATION_TEXT}}", citation)

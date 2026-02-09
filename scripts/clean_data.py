@@ -51,6 +51,12 @@ def parse_float(value: str) -> float | None:
         return None
 
 
+def is_emergency(value: str) -> bool:
+    if value is None:
+        return False
+    return value.strip().lower() == "emergency/unplanned outages"
+
+
 def load_region_ids(path: Path) -> Dict[str, str]:
     with path.open(newline="", encoding="utf-8") as f:
         reader = csv.DictReader(f)
@@ -83,12 +89,12 @@ def load_raw_data(
                 continue
 
             subqueue = (row.get("What sub-queue are you reporting from?") or "").strip()
-            scheduled = parse_float(
-                row.get(
-                    "How many hours of scheduled outages were planned for today in your sub-queue?",
-                    "",
-                )
+            scheduled_raw = row.get(
+                "How many hours of scheduled outages were planned for today in your sub-queue?",
+                "",
             )
+            emergency = is_emergency(scheduled_raw)
+            scheduled = parse_float(scheduled_raw)
             actual = parse_float(
                 row.get(
                     "How many hours of actual outages occurred today in your sub-queue?",
@@ -97,8 +103,18 @@ def load_raw_data(
             )
 
             key = (date_obj.strftime(RAW_DATE_FMT), oblast)
-            data.setdefault(key, {"scheduled": [], "actual": [], "subqueues": set()})
-            if scheduled is not None:
+            data.setdefault(
+                key,
+                {
+                    "scheduled": [],
+                    "actual": [],
+                    "subqueues": set(),
+                    "emergency_subqueues": set(),
+                },
+            )
+            if emergency and subqueue:
+                data[key]["emergency_subqueues"].add(subqueue)
+            if scheduled is not None and not emergency:
                 data[key]["scheduled"].append(scheduled)
             if actual is not None:
                 data[key]["actual"].append(actual)
@@ -135,16 +151,31 @@ def main() -> None:
                 "Scheduled_outages",
                 "Actual_outages",
                 "Subqueues",
+                "Emergency?",
             ]
         )
         for date in dates:
             for oblast in oblasts:
                 values = aggregated.get(
-                    (date, oblast), {"scheduled": [], "actual": [], "subqueues": set()}
+                    (date, oblast),
+                    {
+                        "scheduled": [],
+                        "actual": [],
+                        "subqueues": set(),
+                        "emergency_subqueues": set(),
+                    },
                 )
-                scheduled_avg = (
-                    mean(values["scheduled"]) if values["scheduled"] else ""
-                )
+                emergency_subqueues = sorted(values["emergency_subqueues"])
+                emergency_text = ", ".join(emergency_subqueues)
+                if emergency_subqueues:
+                    if values["scheduled"]:
+                        scheduled_avg = values["scheduled"][0]
+                    else:
+                        scheduled_avg = ""
+                else:
+                    scheduled_avg = (
+                        mean(values["scheduled"]) if values["scheduled"] else ""
+                    )
                 actual_avg = mean(values["actual"]) if values["actual"] else ""
                 subqueues = sorted(values["subqueues"])
                 subqueue_text = ", ".join(subqueues)
@@ -156,6 +187,7 @@ def main() -> None:
                         scheduled_avg,
                         actual_avg,
                         subqueue_text,
+                        emergency_text,
                     ]
                 )
 
