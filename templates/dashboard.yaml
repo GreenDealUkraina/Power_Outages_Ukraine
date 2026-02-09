@@ -9,7 +9,7 @@ citation: "R., Carr & F., Meissner. 2026. Daily power outage data by region in U
 purpose:
   heading: Purpose
   text: |
-    This interactive webpage shows the scheduled and actual hours of power outages reported by a sample households in Ukraine each day across 15 different administrative regions (oblasts).
+    Scheduled and emergency power outages are required currently in Ukraine due to continuous Russian attacks on energy infrastructure. This interactive webpage shows the scheduled and actual hours of power outages reported by a sample households in Ukraine each day across 15 different administrative regions (oblasts).
 visualised:
   heading: What data is visualised?
   text: | 
