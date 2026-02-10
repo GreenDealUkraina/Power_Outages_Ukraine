@@ -102,6 +102,10 @@
       cursor: pointer;
       text-align: left;
     }
+    .flags {
+      font-size: 14px;
+      margin-left: 6px;
+    }
     .collapsible-toggle .arrow {
       display: inline-block;
       transition: transform 0.2s ease;
@@ -192,6 +196,13 @@
         {{LOGOS}}
       </div>
     </header>
+    <section class="grid single">
+      <div class="panel">
+        <h3>{{MAPS_TITLE}}</h3>
+        <p class="description">Use the dropdown inside the map panel to switch dates.</p>
+        <iframe src="{{MAPS_FILE}}" title="Outage maps"></iframe>
+      </div>
+    </section>
     <section class="summary collapsible">
       <button class="collapsible-toggle" type="button" aria-expanded="true">
         <span class="arrow">▸</span>
@@ -207,21 +218,19 @@
         <span>{{VISUAL_TITLE}}</span>
       </button>
       <div class="collapsible-content open">
-        <p class="description">{{VISUAL_TEXT}}</p>
+        {{VISUAL_TEXT}}
       </div>
     </section>
     <div class="divider"></div>
     {{INSIGHTS_SECTION}}
-    <section class="grid single">
-      <div class="panel">
-        <h3>{{MAPS_TITLE}}</h3>
-        <p class="description">Use the dropdown inside the map panel to switch dates.</p>
-        <iframe src="{{MAPS_FILE}}" title="Outage maps"></iframe>
+    <section class="summary collapsible">
+      <button class="collapsible-toggle" type="button" aria-expanded="true">
+        <span class="arrow">▸</span>
+        <span>{{ABOUT_TITLE}} <span class="flags">🇺🇦 🇩🇪 🇵🇱</span></span>
+      </button>
+      <div class="collapsible-content open">
+        <p class="description">{{ABOUT_TEXT}}</p>
       </div>
-    </section>
-    <section class="summary">
-      <h2>{{ABOUT_TITLE}}</h2>
-      <p class="description">{{ABOUT_TEXT}}</p>
     </section>
     <section class="summary">
       <div class="meta" style="font-size: 12px;">

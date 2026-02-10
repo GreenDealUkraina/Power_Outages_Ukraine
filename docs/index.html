@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Daily Power Outage Data by Region in Ukraine</title>
+  <title>Daily Power Outage Survey by Region in Ukraine</title>
   <style>
     :root {
       --ink: #1f2a34;
@@ -102,6 +102,10 @@
       cursor: pointer;
       text-align: left;
     }
+    .flags {
+      font-size: 14px;
+      margin-left: 6px;
+    }
     .collapsible-toggle .arrow {
       display: inline-block;
       transition: transform 0.2s ease;
@@ -182,7 +186,7 @@
   <div class="page">
     <header>
       <div>
-        <h1 class="title">Daily Power Outage Data by Region in Ukraine</h1>
+        <h1 class="title">Daily Power Outage Survey by Region in Ukraine</h1>
         <p class="description">Updated on 09.02.2026</p>
         <div class="authors">Prepared by the Data &amp; Modelling team from Green Deal Ukraïna: <a href="https://www.linkedin.com/in/robert-carr-b71826183/" target="_blank" rel="noopener">Robert Carr</a> &amp; <a href="https://www.linkedin.com/in/frank-mei%C3%9Fner-317991211/" target="_blank" rel="noopener">Dr. Frank Meissner</a></div>
         <div class="authors">Email contact - robert.carr [at] helmholtz-berlin.de</div>
@@ -193,30 +197,6 @@
 <a href="https://greendealukraina.org/" target="_blank" rel="noopener"><img src="logos/GDU_logo_nowhitespace.png" alt="Logo"></a>
       </div>
     </header>
-    <section class="summary collapsible">
-      <button class="collapsible-toggle" type="button" aria-expanded="true">
-        <span class="arrow">▸</span>
-        <span>Purpose</span>
-      </button>
-      <div class="collapsible-content open">
-        <p class="description">Scheduled and emergency power outages are required currently in Ukraine due to continuous Russian attacks on energy infrastructure. This interactive webpage shows the scheduled and actual hours of power outages reported by a sample households in Ukraine each day across 15 different administrative regions (oblasts).
-</p>
-      </div>
-    </section>
-    <section class="summary collapsible">
-      <button class="collapsible-toggle" type="button" aria-expanded="true">
-        <span class="arrow">▸</span>
-        <span>What data is visualised?</span>
-      </button>
-      <div class="collapsible-content open">
-        <p class="description">Daily scheduled and actual outage hours for a sample of two consumer sub-queues per region. Consumers in each region in Ukraine are divided into twelve total sub-queues with a roughly equal electricity demand. 
-The scheduled outages provided by the Distribution System Operators (DSOs) indicate which sub-queues will be disonnected and when. The system is intended to impact all consumers equally on a weekly timescale. 
-When necccessary, emergency outages are announced that take priority over scheduled outages, and these are indicated on the map in the left panel.
-</p>
-      </div>
-    </section>
-    <div class="divider"></div>
-    
     <section class="grid single">
       <div class="panel">
         <h3>Scheduled and actual outages by administrative region</h3>
@@ -224,9 +204,37 @@ When necccessary, emergency outages are announced that take priority over schedu
         <iframe src="maps/outage_maps.html" title="Outage maps"></iframe>
       </div>
     </section>
-    <section class="summary">
-      <h2>About the project</h2>
-      <p class="description">Green Deal Ukraïna (GDU) is a German, Ukrainian, and Polish project that aims to support Ukraine in making future-proof energy and climate policy decisions. It is funded by the German Ministry of Research, Technology, and Space (BMFTR). The three main work streams are data & modelling, policy advice, and capacity building. In addition, GDU contributes to the development of the newly established Kyiv Energy and Climate Lab in Ukraine.</p>
+    <section class="summary collapsible">
+      <button class="collapsible-toggle" type="button" aria-expanded="true">
+        <span class="arrow">▸</span>
+        <span>Purpose</span>
+      </button>
+      <div class="collapsible-content open">
+        <p class="description">Scheduled and emergency power outages are required currently in Ukraine due to continuous Russian attacks on energy infrastructure. This webpage shows the scheduled, emergency, and actual hours of power outages reported by a sample households in Ukraine each day across 15 different administrative regions (oblasts).
+</p>
+      </div>
+    </section>
+    <section class="summary collapsible">
+      <button class="collapsible-toggle" type="button" aria-expanded="true">
+        <span class="arrow">▸</span>
+        <span>Methodology</span>
+      </button>
+      <div class="collapsible-content open">
+        <p class="description">Officially, consumers in every Ukrainian region are divided into twelve total "sub-queues", each with a roughly equal electricity demand. 
+The outage scheduldes provided ahead of time by Distribution System Operators (DSOs) indicate which sub-queues will be disconnected and when, with the intention of affecting consumers equally at a weekly timescale. When necccessary, emergency outages are announced that take priority over scheduled outages.</p>
+<p class="description">To build the maps, scheduled, emergency, and actual outage hours for a sample of two consumer sub-queues per region are collected daily via a survey. The values displayed are the average of both sub-queues. For the scheduled panel, if one sub-queue experienced emeregency outages then it is excluded from the average and instead indicated with a symbol.</p>
+      </div>
+    </section>
+    <div class="divider"></div>
+    
+    <section class="summary collapsible">
+      <button class="collapsible-toggle" type="button" aria-expanded="true">
+        <span class="arrow">▸</span>
+        <span>About the project <span class="flags">🇺🇦 🇩🇪 🇵🇱</span></span>
+      </button>
+      <div class="collapsible-content open">
+        <p class="description">Green Deal Ukraïna (GDU) is a German, Ukrainian, and Polish project that aims to support Ukraine in making future-proof energy and climate policy decisions. It is funded by the German Ministry of Research, Technology, and Space (BMFTR). The three main work streams are data & modelling, policy advice, and capacity building. In addition, GDU contributes to the development of the newly established Kyiv Energy and Climate Lab in Ukraine.</p>
+      </div>
     </section>
     <section class="summary">
       <div class="meta" style="font-size: 12px;">

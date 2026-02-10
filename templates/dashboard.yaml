@@ -1,4 +1,4 @@
-title: "Daily Power Outage Data by Region in Ukraine"
+title: "Daily Power Outage Survey by Region in Ukraine"
 description: "Updated on 09.02.2026"
 header_link:
   prefix: "Check out our other dashboard that focuses more generally on the"
@@ -9,13 +9,15 @@ citation: "R., Carr & F., Meissner. 2026. Daily power outage data by region in U
 purpose:
   heading: Purpose
   text: |
-    Scheduled and emergency power outages are required currently in Ukraine due to continuous Russian attacks on energy infrastructure. This interactive webpage shows the scheduled and actual hours of power outages reported by a sample households in Ukraine each day across 15 different administrative regions (oblasts).
+    Scheduled and emergency power outages are required currently in Ukraine due to continuous Russian attacks on energy infrastructure. This webpage shows the scheduled, emergency, and actual hours of power outages reported by a sample households in Ukraine each day across 15 different administrative regions (oblasts).
 visualised:
-  heading: What data is visualised?
+  heading: Methodology
   text: | 
-    Daily scheduled and actual outage hours for a sample of two consumer sub-queues per region. Consumers in each region in Ukraine are divided into twelve total sub-queues with a roughly equal electricity demand. 
-    The scheduled outages provided by the Distribution System Operators (DSOs) indicate which sub-queues will be disonnected and when. The system is intended to impact all consumers equally on a weekly timescale. 
-    When necccessary, emergency outages are announced that take priority over scheduled outages, and these are indicated on the map in the left panel.
+    Officially, consumers in every Ukrainian region are divided into twelve total "sub-queues", each with a roughly equal electricity demand. 
+    The outage scheduldes provided ahead of time by Distribution System Operators (DSOs) indicate which sub-queues will be disconnected and when, with the intention of affecting consumers equally at a weekly timescale. When necccessary, emergency outages are announced that take priority over scheduled outages. 
+    
+    To build the maps, scheduled, emergency, and actual outage hours for a sample of two consumer sub-queues per region are collected daily via a survey. The values displayed are the average of both sub-queues. For the scheduled panel, if one sub-queue experienced emeregency outages then it is excluded from the average and instead indicated with a symbol.  
+    
 authors:
   - name: Robert Carr
     linkedin: https://www.linkedin.com/in/robert-carr-b71826183/

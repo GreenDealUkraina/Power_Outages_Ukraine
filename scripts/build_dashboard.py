@@ -87,6 +87,11 @@ def build_insights_list(items: List[str]) -> str:
     return "\n".join([f"<li>{item}</li>" for item in items])
 
 
+def build_paragraphs(text: str) -> str:
+    blocks = [b.strip() for b in text.split("\n\n") if b.strip()]
+    return "\n".join([f'<p class="description">{b}</p>' for b in blocks])
+
+
 def main() -> None:
     args = parse_args()
     template_path = Path(args.template)
@@ -147,7 +152,7 @@ def main() -> None:
 
     visualised = config.get("visualised", {})
     visual_title = visualised.get("heading", "What is visualised?")
-    visual_text = visualised.get("text", "")
+    visual_text = build_paragraphs(visualised.get("text", ""))
 
     about = config.get("about", {})
     about_title = about.get("heading", "About the project")
